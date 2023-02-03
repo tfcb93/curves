@@ -1,51 +1,65 @@
 import chroma from "chroma-js";
 import { cubicBezier, linearBezier, quadraticBezier } from "./utils/curves";
 import { CurveTypes } from "./utils/enums";
+import { initializeColorControl, initializePoints } from "./utils/functions";
+import { curveColors, curvePoints } from "./utils/types";
 
 class Curve {
-  private startX: number;
-  private startY: number;
-  private endX: number;
-  private endY: number;
-  private prevPoint: [number, number];
-  private nextPoint: [number, number];
-  private points: Array<Array<number>>;
-  private colors: Array<string>;
-  private actualColor: string;
+  private points: curvePoints;
+  private colorControl: curveColors;
   private curveType: CurveTypes;
-  private controlPoints: Array<Array<number>>;
   private step: number;
   private stepInterval: number;
 
   constructor(startX, startY) {
-    this.startX = startX;
-    this.startY = startY;
-    this.curveType = CurveTypes.Quadratic;
+    this.points = initializePoints();
+    this.points.start.x = this.points.prev.x = startX;
+    this.points.start.y = this.points.prev.y = startY;
+    this.colorControl = initializeColorControl();
+    this.colorControl.actualColor = chroma.random();
+    this.curveType = CurveTypes.Cubic;
     this.step = 0;
     this.stepInterval = 0.01;
-    this.points = [];
-    this.prevPoint = [this.startX, this.startY];
-    this.actualColor = chroma.random();
     this.calculatePoints();
     this.calculateColors();
     this.generatePoints();
   }
 
   drawControlPoints(ctx) {
-    this.points.map(() => {});
+    ctx.beginPath();
+    ctx!.fillStyle = "yellow";
+    ctx?.arc(
+      this.points.controlPoints.one.x,
+      this.points.controlPoints.one.y,
+      5,
+      0,
+      2 * Math.PI
+    );
+    if (this.curveType === CurveTypes.Cubic) {
+      ctx?.arc(
+        this.points.controlPoints.two.x,
+        this.points.controlPoints.two.y,
+        5,
+        0,
+        2 * Math.PI
+      );
+    }
+    ctx?.fill();
   }
 
   drawCurve(ctx) {
     ctx.beginPath();
-    ctx!.strokeStyle = this.actualColor;
-    ctx?.moveTo(this.prevPoint[0], this.prevPoint[1]);
-    ctx?.lineTo(this.nextPoint[0], this.nextPoint[1]);
+    ctx!.strokeStyle = this.colorControl.actualColor;
+    ctx?.moveTo(this.points.prev.x, this.points.prev.y);
+    ctx?.lineTo(this.points.next.x, this.points.next.y);
     ctx?.stroke();
-    this.prevPoint = this.nextPoint.map((value) => value) as [number, number];
+    this.points.prev.x = this.points.next.x;
+    this.points.prev.y = this.points.next.y;
+
     if (this.step >= 1) {
       this.step = 0;
-      this.startX = this.endX;
-      this.startY = this.endY;
+      this.points.start.x = this.points.end.x;
+      this.points.start.y = this.points.end.y;
       this.calculatePoints();
       this.calculateColors();
     }
@@ -55,55 +69,61 @@ class Curve {
   calculatePoints() {
     this.generateRandomEndPoints(window.innerWidth, 0, window.innerHeight, 0);
     this.generateRandomControlPoints(
-      this.startX - 1000,
-      this.startY + 1000,
-      this.startX - 100,
-      this.startY + 100
+      this.points.start.x - 1000,
+      this.points.start.y + 1000,
+      this.points.start.x - 100,
+      this.points.start.y + 100
     );
   }
 
   generatePoints() {
     switch (this.curveType) {
       case CurveTypes.Linear:
-        for (let i = 0; i < 1; i = i + this.step) {
-          this.points = [
-            ...this.points,
-            linearBezier([this.startX, this.startY], [this.endX, this.endY], i),
-          ];
-        }
+        [this.points.next.x, this.points.next.y] = linearBezier(
+          [this.points.start.x, this.points.start.y],
+          [this.points.end.x, this.points.end.y],
+          this.step
+        );
+        this.step += this.stepInterval;
         break;
       case CurveTypes.Cubic:
-        for (let i = 0; i < 1; i = i + this.step) {
-          this.points = [
-            ...this.points,
-            cubicBezier(
-              [this.startX, this.startY],
-              this.controlPoints[0] as [number, number],
-              this.controlPoints[1] as [number, number],
-              [this.endX, this.endY],
-              i
-            ),
-          ];
-        }
+        [this.points.next.x, this.points.next.y] = cubicBezier(
+          [this.points.start.x, this.points.start.y],
+          [
+            this.points.controlPoints.one.x,
+            this.points.controlPoints.one.y,
+          ] as [number, number],
+          [
+            this.points.controlPoints.two.x,
+            this.points.controlPoints.two.y,
+          ] as [number, number],
+          [this.points.end.x, this.points.end.y],
+          this.step
+        );
+        this.step += this.stepInterval;
         break;
       case CurveTypes.Quadratic:
-        this.nextPoint = quadraticBezier(
-          [this.startX, this.startY],
-          this.controlPoints[0] as [number, number],
-          [this.endX, this.endY],
+        [this.points.next.x, this.points.next.y] = quadraticBezier(
+          [this.points.start.x, this.points.start.y],
+          [
+            this.points.controlPoints.one.x,
+            this.points.controlPoints.one.y,
+          ] as [number, number],
+          [this.points.end.x, this.points.end.y],
           this.step
         );
         this.step += this.stepInterval;
         break;
       default:
-        this.points = [];
+        null;
     }
-    this.actualColor = this.colors[parseInt((this.step * 100).toString()) - 1];
+    this.colorControl.actualColor =
+      this.colorControl.colorArray[parseInt((this.step * 100).toString()) - 1];
   }
 
   calculateColors() {
-    this.colors = chroma
-      .scale([this.actualColor, chroma.random()])
+    this.colorControl.colorArray = chroma
+      .scale([this.colorControl.actualColor, chroma.random()])
       .mode("hsl")
       .colors(1 / this.stepInterval);
   }
@@ -114,20 +134,25 @@ class Curve {
     maxY: number = 100,
     minY: number = 0
   ) {
-    this.controlPoints = [
-      [
-        Math.floor(Math.random() * (maxX - minX) + minX),
-        Math.floor(Math.random() * (maxY - minY) + minY),
-      ],
-      [
-        Math.floor(Math.random()) * (maxX - minX) + minX,
-        Math.floor(Math.random() * (maxY - minY) + minY),
-      ],
-    ];
+    this.points.controlPoints.one.x = Math.floor(
+      Math.random() * (maxX - minX) + minX
+    );
+    this.points.controlPoints.one.y = Math.floor(
+      Math.random() * (maxY - minY) + minY
+    );
+    this.points.controlPoints.two.x = Math.floor(
+      Math.random() * (maxX - minX) + minX
+    );
+    this.points.controlPoints.two.y = Math.floor(
+      Math.random() * (maxY - minY) + minY
+    );
   }
 
   setControlPoints(cp1: [number, number], cp2: [number, number]) {
-    this.controlPoints = [cp1, cp2];
+    this.points.controlPoints.one.x = cp1[0];
+    this.points.controlPoints.one.y = cp1[1];
+    this.points.controlPoints.two.x = cp2[0];
+    this.points.controlPoints.two.y = cp2[1];
   }
 
   generateRandomEndPoints(
@@ -136,8 +161,8 @@ class Curve {
     maxY: number = 100,
     minY: number = 0
   ) {
-    this.endX = Math.floor(Math.random() * (maxX - minX) + minX);
-    this.endY = Math.floor(Math.random() * (maxY - minY) + minY);
+    this.points.end.x = Math.floor(Math.random() * (maxX - minX) + minX);
+    this.points.end.y = Math.floor(Math.random() * (maxY - minY) + minY);
   }
 }
 

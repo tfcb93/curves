@@ -38,9 +38,9 @@ const cubicBezier = (
     3 * (1 - t) * Math.pow(t, 2) * controlPoint2[0] +
     Math.pow(t, 3) * endPoint[0];
   const newY =
-    Math.pow(1 - t, 3) * startPoint[0] +
-    3 * (1 - t) * Math.pow(t, 2) * controlPoint2[0] +
-    Math.pow(t, 3) * endPoint[0];
+    Math.pow(1 - t, 3) * startPoint[1] +
+    3 * (1 - t) * Math.pow(t, 2) * controlPoint2[1] +
+    Math.pow(t, 3) * endPoint[1];
 
   return [newX, newY];
 };

@@ -21,19 +21,21 @@ function main() {
   const curves: Array<Curve> = [];
 
   const drawingCurve = () => {
+    // ctx?.clearRect(0, 0, windowSize.width, windowSize.height);
     curves.forEach((curve) => {
       curve.drawCurve(ctx);
     });
+    // bezierTest(ctx);
     requestAnimationFrame(drawingCurve);
   };
 
   drawingCurve();
 
   document.addEventListener("click", (e: MouseEvent) => {
-    // curves.push(new Curve(e.clientX, e.clientY));
-    for (let i = 0; i < 100; i++) {
-      curves.push(new Curve(e.clientX, e.clientY));
-    }
+    curves.push(new Curve(e.clientX, e.clientY));
+    // for (let i = 0; i < 100; i++) {
+    //   curves.push(new Curve(e.clientX, e.clientY));
+    // }
   });
 
   document.addEventListener("keypress", (e: KeyboardEvent) => {
