@@ -4,6 +4,12 @@
   src: url("./static/fonts/Amita-Regular.ttf") format("truetype");
 }
 
+@font-face {
+  font-family: "Poppins";
+  src: url("./static/fonts/Poppins-Regular.ttf") format("truetype");
+  src: url("./static/fonts/Poppins-SemiBold.ttf") format("truetype");
+}
+
 body {
   margin: 0;
   overflow: hidden;
@@ -16,7 +22,8 @@ body {
   justify-content: center;
   align-items: center;
   color: white;
-  font-family: "Amita", sans-serif;
+  font-weight: 400;
+  font-family: "Poppins";
 }
 .card-content {
   display: flex;
@@ -27,6 +34,8 @@ body {
 .title {
   font-weight: bold;
   font-size: 64px;
+  font-family: "Amita";
+  margin-bottom: 10px;
 }
 .instructions {
   & > ul {
@@ -41,6 +50,14 @@ body {
   color: red;
 }
 .links {
+  padding: 30px 0;
+  display: flex;
+  width: 100%;
+  font-size: 24px;
+  justify-content: space-around;
+  & > a {
+    text-decoration: none;
+  }
 }
 .bottom-text {
   padding: 10px 0;

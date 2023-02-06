@@ -28,6 +28,11 @@ function main() {
   drawingCurve();
 
   document.addEventListener("click", (e: MouseEvent) => {
+    // Don't start if you click on the links
+    const targetElement = e.target as HTMLElement;
+    if (targetElement.tagName === "A") {
+      return;
+    }
     // cap it to 1000
     if (showInstructions) {
       const instructions = document.getElementById("instruction-card");
