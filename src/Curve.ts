@@ -69,10 +69,10 @@ class Curve {
   calculatePoints() {
     this.generateRandomEndPoints(window.innerWidth, 0, window.innerHeight, 0);
     this.generateRandomControlPoints(
-      this.points.start.x - 1000,
-      this.points.start.y + 1000,
-      this.points.start.x - 100,
-      this.points.start.y + 100
+      window.innerWidth,
+      0,
+      window.innerHeight,
+      0
     );
   }
 
