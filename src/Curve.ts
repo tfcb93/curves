@@ -11,13 +11,13 @@ class Curve {
   private step: number;
   private stepInterval: number;
 
-  constructor(startX, startY) {
+  constructor(startX: number, startY: number, curveType: CurveTypes) {
     this.points = initializePoints();
     this.points.start.x = this.points.prev.x = startX;
     this.points.start.y = this.points.prev.y = startY;
     this.colorControl = initializeColorControl();
     this.colorControl.actualColor = chroma.random();
-    this.curveType = CurveTypes.Cubic;
+    this.curveType = curveType;
     this.step = 0;
     this.stepInterval = 0.01;
     this.calculatePoints();

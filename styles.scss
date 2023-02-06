@@ -1,5 +1,53 @@
+@font-face {
+  font-family: "Amita";
+  src: url("./static/fonts/Amita-Bold.ttf") format("truetype");
+  src: url("./static/fonts/Amita-Regular.ttf") format("truetype");
+}
+
 body {
   margin: 0;
   overflow: hidden;
   background-color: black;
+}
+.card-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-family: "Amita", sans-serif;
+}
+.card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.title {
+  font-weight: bold;
+  font-size: 64px;
+}
+.instructions {
+  & > ul {
+    text-align: left;
+    list-style-type: square;
+    & > li {
+    }
+  }
+}
+.warning {
+  font-size: 36px;
+  color: red;
+}
+.links {
+}
+.bottom-text {
+  padding: 10px 0;
+  font-family: "Courier New", Courier, monospace;
+  font-size: 24px;
+  color: green;
+}
+.footer-text {
+  padding: 10px 0;
 }
