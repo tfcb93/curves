@@ -1,5 +1,5 @@
 import Curve from "./Curve";
-import startTrays from "./utils/tray";
+import startTray, { closeMenu } from "./utils/tray";
 import { CurveTypes } from "./utils/enums";
 import { windowSize } from "./utils/types";
 import { changeCurves, clearScreen } from "./utils/functions";
@@ -35,7 +35,7 @@ function main() {
 
   drawingCurve();
 
-  startTrays({
+  startTray({
     clearFunction: () => clearScreen(ctx, windowSize, curves),
     multipleFunction: () => {
       isMultipleLines = !isMultipleLines;
@@ -49,6 +49,8 @@ function main() {
   });
 
   document.addEventListener("click", (e: MouseEvent) => {
+    // Close if menu is open
+    closeMenu();
     // Don't start if you click on the links
     const targetElement = e.target as HTMLElement;
     if (targetElement.tagName === "A") {

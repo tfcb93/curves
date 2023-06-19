@@ -6,9 +6,10 @@ interface startTraysProps {
   selectTypeFunction?: Function;
 }
 
-function startTrays({clearFunction, multipleFunction, selectTypeFunction}:startTraysProps) {
-  const menuTray = document.getElementById("menu-tray");
-  const menuBtn = document.getElementById("menu-icon");
+const menuTray: HTMLElement | null = document.getElementById("menu-tray");
+const menuBtn: HTMLElement | null = document.getElementById("menu-icon");
+
+function startTray({clearFunction, multipleFunction, selectTypeFunction}:startTraysProps) {
   const closeButton = document.getElementById("tray-close");
   const curveSelectLeft = document.getElementById("type-left");
   const curveSelectRight = document.getElementById("type-right");
@@ -16,10 +17,7 @@ function startTrays({clearFunction, multipleFunction, selectTypeFunction}:startT
   const toggle10Curves = document.getElementById("toggle-ten-curves");
 
   closeButton?.addEventListener("click", (e: MouseEvent) => {
-    if (menuTray?.classList.contains("menu-active")) {
-      menuBtn?.classList.add("menu-active");
-      menuTray.classList.remove("menu-active");
-    }
+    closeMenu()
   });
 
   resetButton?.addEventListener("click", (e: MouseEvent) => {
@@ -56,4 +54,11 @@ function startTrays({clearFunction, multipleFunction, selectTypeFunction}:startT
   });
 }
 
-export default startTrays;
+export function closeMenu() {
+  if (menuTray?.classList.contains("menu-active")) {
+    menuBtn?.classList.add("menu-active");
+    menuTray.classList.remove("menu-active");
+  }
+}
+
+export default startTray;
