@@ -8,6 +8,39 @@
     <link rel="stylesheet" href="styles.scss" />
   </head>
   <body>
+    <div class="menu-container">
+      <div class="menu-active menu-icon icon" id="menu-icon">
+        Menu
+      </div>
+      <div class="menu-tray" id="menu-tray">
+        <div class="tray-container">
+          <div class="tray-close icon" id="tray-close">
+            Close
+          </div>
+          <div class="tray-input-container">
+            <label for="curve-types">Curve types</label>
+            <!-- <select id="curve-types">
+              <option value="1">Linear</option>
+              <option value="3">Quadratic</option>
+              <option value="2">Cubic</option>
+            </select> -->
+            <div id="curve-types" class=" type-container">
+              <button id="type-left" class="type-button left"><</button>
+              <span id="type-label" class="type-label">Linear</span>
+              <button id="type-right" class="type-button right">></button>
+            </div>
+          </div>
+          <div class="tray-input-container">
+            <label for="clear-screen">Clean page and reset</label>
+            <button id="clear-screen">reset</button>
+          </div>
+          <div class="tray-input-container">
+            <label for="toggle-ten-curves">Toggle 10 curves</label>
+            <button id="toggle-ten-curves">Off</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <div id="instruction-card" class="card-container">
       <div class="card-content">
         <h1 class="title">Curves</h1>
@@ -20,6 +53,9 @@
               Press Z to change the type of curve (Linear, Quadratic, Cubic)
             </li>
           </ul>
+        </div>
+        <div class="mobile-instructions">
+          Open the menu to change preferences
         </div>
         <div class="warning">
           <div>Seizure Warning</div>

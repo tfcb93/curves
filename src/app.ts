@@ -1,11 +1,19 @@
 import Curve from "./Curve";
+import startTrays from "./utils/tray";
 import { CurveTypes } from "./utils/enums";
+import { windowSize } from "./utils/types";
+import { changeCurves, clearScreen } from "./utils/functions";
 
 function main() {
   const canvas = <HTMLCanvasElement>document.getElementById("app");
   const ctx: CanvasRenderingContext2D | null = canvas?.getContext("2d");
+
+  const optionsBtn: HTMLElement | null = document.getElementById("menu-icon");
+  const optionsTray: HTMLElement | null = document.getElementById("menu-tray");
+  const curveSelectLabel = document.getElementById("type-label");
+
   let showInstructions = true;
-  const windowSize = {
+  const windowSize: windowSize = {
     width: window.innerWidth,
     height: window.innerHeight,
   };
@@ -26,6 +34,19 @@ function main() {
   };
 
   drawingCurve();
+
+  startTrays({
+    clearFunction: () => clearScreen(ctx, windowSize, curves),
+    multipleFunction: () => {
+      isMultipleLines = !isMultipleLines;
+    },
+    selectTypeFunction: (val = 0) => {
+      curveSelectedType = changeCurves(curveSelectedType + val, true);
+      if(curveSelectLabel) {
+        curveSelectLabel.innerText = CurveTypes[curveSelectedType];
+      };
+    },
+  });
 
   document.addEventListener("click", (e: MouseEvent) => {
     // Don't start if you click on the links
@@ -53,8 +74,7 @@ function main() {
   document.addEventListener("keypress", (e: KeyboardEvent) => {
     // clear
     if (e.key === "c") {
-      curves = [];
-      ctx?.clearRect(0, 0, windowSize.width, windowSize.height);
+      clearScreen(ctx, windowSize, curves)
     }
 
     // multiple
@@ -63,20 +83,22 @@ function main() {
     }
 
     if (e.key === "z") {
-      switch (curveSelectedType) {
-        case CurveTypes.Linear:
-          curveSelectedType = CurveTypes.Quadratic;
-          break;
-        case CurveTypes.Quadratic:
-          curveSelectedType = CurveTypes.Cubic;
-          break;
-        case CurveTypes.Cubic:
-          curveSelectedType = CurveTypes.Linear;
-          break;
-        default:
-          null;
-      }
+      curveSelectedType = changeCurves(curveSelectedType);
     }
+  });
+
+  optionsBtn?.addEventListener("click", (e: MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if(optionsBtn.classList.contains("menu-active")) {
+      optionsBtn?.classList.remove("menu-active");
+      optionsTray?.classList.add("menu-active");
+    }
+  });
+
+  optionsTray?.addEventListener("click", (e: MouseEvent) =>{
+    e.stopPropagation();
+    e.preventDefault();
   });
 }
 

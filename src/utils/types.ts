@@ -31,3 +31,8 @@ export type curveColors = {
   colorArray: Array<string>;
   actualColor: string;
 };
+
+export type windowSize = {
+  width: number;
+  height: number
+}
