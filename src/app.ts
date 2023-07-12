@@ -1,11 +1,11 @@
-import Curve from "./Curve";
-import { CurveTypes } from "./utils/enums";
-import { windowSize } from "./utils/types";
-import events from "./utils/events";
+import Curve from './Curve';
+import { CurveTypes } from './utils/enums';
+import { windowSize } from './utils/types';
+import events from './utils/events';
 
 function main() {
-  const canvas = <HTMLCanvasElement>document.getElementById("app");
-  const ctx: CanvasRenderingContext2D | null = canvas?.getContext("2d");
+  const canvas = <HTMLCanvasElement>document.getElementById('app');
+  const ctx: CanvasRenderingContext2D | null = canvas?.getContext('2d');
 
   const windowSize: windowSize = {
     width: window.innerWidth,
@@ -21,10 +21,11 @@ function main() {
   let animId;
 
   // Initialization for menus and events
-  events({ctx, windowSize, curveSelectedType, curves, isMultipleLines});
+  events({ ctx, windowSize, curveSelectedType, curves, isMultipleLines });
 
-// Drawing loop
+  // Drawing loop
   const drawingCurve = () => {
+    // ctx?.clearRect(0, 0, windowSize.width, windowSize.height); // this is cool huh
     curves.forEach((curve) => {
       curve.drawCurve(ctx);
     });
